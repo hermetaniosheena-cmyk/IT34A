@@ -24,6 +24,17 @@ function logActivity($pdo, $user_id, $email, $action, $status='success') {
     activity_log_user_agent
     ) VALUES (?, ?, ?, ?, ?, ?)
     ");
+
+    //execute the insert
+    $success = $stmt->execute([
+        $user_id,
+        $user_email,
+        $action,
+        $ip,
+        $user_agent
+    ]);
+    return $success;
+
    
     
  }catch (PDOException $e){

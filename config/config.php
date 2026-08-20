@@ -1,6 +1,8 @@
  <?php 
 session_start();
 
+require_once(_dir . '/../includes/activity-logger.php');
+
 //define('' ,'');
 define ('BASE_URL', 'http://localhost/IT30A');
 
