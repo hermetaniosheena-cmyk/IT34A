@@ -4,7 +4,7 @@ session_start();
 require_once('include/activity-logger.php');
 
 //define('' ,'');
-define ('BASE_URL', 'http://localhost/IT34A');
+define ('BASE_URL', 'http://localhost/IT30A');
 
 define('DB_HOST','localhost');
 define('DB_NAME','it30a_lab_db');
