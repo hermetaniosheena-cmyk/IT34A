@@ -1,5 +1,14 @@
 <?php 
-require_once _DIR_ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/config.php';
+ if (isset($_SESSION['user_id'])){
+    logActivity(
+        $pdo,
+        $_SESSION['user_id'],
+        $_SESSION['user_email'],
+        'logout',
+        'success'
+    );
+ }
 
 $_SESSION =[];
 session_destroy();
