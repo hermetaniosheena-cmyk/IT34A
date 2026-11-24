@@ -1,6 +1,6 @@
 <?php
 require 'config/config.php';
-require 'config/functions.php';
+
 
 if(isset($_SESSION['user_id'])){
     header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
@@ -13,39 +13,47 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $login = trim($_POST['login'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if(loginUser($pdo, $login, $password)){
-        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
-        exit;
-    }
-
     $error = 'Invalid login credentials';
 
-    if($login==='' || $password===''){
-        $error = 'Invalid login credential';
-        LogActivity(
+if($login==='' || $password===''){
+        $error = 'Invalid login credentials';;
+        logActivity(
         $pdo,
         null,
         $login,
-        'login_attemp',
-        'failed'
-       );
-
+        'login',
+        'failed,'
+    
+        );
     } else {
-        if(loginUser($pdo, $login, $password)){
 
+    $result = loginUser($pdo, $login, $password);
+
+    if($result ===true){
         logActivity(
+            
             $pdo,
-            $_SESSION["user_id"],
-            $_SESSION["user_email"],
+            $_SESSION['user_id'],
+            $_SESSION['user_email'],
             'login',
             'success'
         );
-        
-        header('Location: '. BASE_URL . '/app/' . $_SESSION['user_role']. '/index.php');
+        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
         exit;
-        }
+        
+    }elseif ($result==='active_session'){
+        $error = 'This account is already logged in on another device.';
+    }else{
+        $error = 'Invalid login credentials';
     }
+    
+
+
 }
+
+}
+
+
 
 ?>
 
@@ -57,6 +65,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <title>Document</title>
 </head>
 <body>
+
+<?php if($error): ?>
+    <p><?=htmlspecialchars($error)?></p>
+<?php endif; ?>
     <h1>User Login</h1>
     <form method="POST">
         <label>Username or email</label>
@@ -64,6 +76,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 name = "login"
                 required
     >
+    <br>
     <br>
     <label>Password</label>
     <input type = "password"
